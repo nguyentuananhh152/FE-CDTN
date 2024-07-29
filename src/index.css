@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.hideScrollBar::-webkit-scrollbar {
+  display: none
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

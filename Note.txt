@@ -1,0 +1,10 @@
+flex: Container flex để sắp xếp các phần tử con.
+items-center: Canh giữa các phần tử con theo trục dọc.
+justify-between: Phân bố các phần tử con dọc theo trục ngang, với phần tử đầu tiên ở đầu và phần tử cuối cùng ở cuối.
+px-4 và lg:px-8: Padding ngang là 1rem, và trên màn hình lớn padding ngang là 2rem.
+pb-4: Padding dưới là 1rem.
+w-full: Chiều rộng là 100%.
+relative: Vị trí tương đối.
+space-x-4: Khoảng cách ngang giữa các phần tử con là 1rem.
+opacity-70: Độ mờ là 70%.
+hidden lg:block: Ẩn phần tử đầu tiên trên màn hình nhỏ, nhưng hiển thị trên màn hình lớn.
