@@ -2,12 +2,16 @@ import React from 'react';
 import Logo from "../src/Logo";
 import {navigationMenu} from "./NavigationMenu";
 import {useNavigate} from "react-router-dom";
-import {Avatar, Button} from "@mui/material";
+import {Avatar, Button, Divider} from "@mui/material";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-
+import {useDispatch, useSelector} from "react-redux";
+import {logout} from "../../store/auth/Action";
+import defaultAvatar from '../src/default-avatar.png';
 const Navigation = () => {
+	const dispatch = useDispatch();
+	const {auth} = useSelector(store => store)
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
 	const handleClick = (event) => {
@@ -19,47 +23,44 @@ const Navigation = () => {
 
 	const navigate = useNavigate();
 	const handleLogout = () => {
-		console.log("Logout");
+		dispatch(logout())
+		window.location.replace("/signin")
 		handleClose();
-
 	}
+
+	const home = () => {
+		window.location.replace('/')
+	}
+
 	return (
 		<div className='h-screen sticky top-0'>
 			<div>
 				{/*Logo*/}
-				<div className='py-5'>
+				<div className='py-5' onClick={home}>
 					<Logo/>
 				</div>
 
 				{/*List navigation*/}
 				<div className='space-y-6'>
 					{navigationMenu.map((item) => <div className='cursor-pointer flex space-x-3 items-center'
-					                                   onClick={() => item.title === "Profile" ? navigate(`/profile/${5}`) : navigate(item.path)}>
+					                                   onClick={() => item.title === "Profile" ? navigate(`/profile/my-profile`) : navigate(item.path)}>
 						{item.icon}
 						<p className='text-xl'>{item.title}</p>
 					</div>)}
 				</div>
 
 				{/*Button*/}
-				<div className='py-10'>
-					<Button
-						sx={{width: "100%", borderRadius: "29px", py: "15px"}}
-						variant='contained'
-					>
-						Tweet
-					</Button>
-				</div>
 			</div>
 
 			<div className='flex items-center justify-between'>
 				<div className='flex items-center space-x-3'>
 					<Avatar
-						alt="username"
-						src="../../logo.svg"
+						src={auth.user?.avatar || defaultAvatar}
 					/>
 					<div>
-						<span>Name</span>
-						<span className='opacity-70'>@Username</span>
+						<span>{auth.user?.firstName || "User"}</span>
+						<br/>
+						<span className='opacity-70'>@{auth.user?.lastName || "User"}</span>
 					</div>
 					<Button
 						id="basic-button"
@@ -79,7 +80,7 @@ const Navigation = () => {
 							'aria-labelledby': 'basic-button',
 						}}
 					>
-						<MenuItem onClick={handleClose}>Logout</MenuItem>
+						<MenuItem onClick={handleLogout}>Logout</MenuItem>
 					</Menu>
 				</div>
 			</div>

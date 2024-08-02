@@ -6,13 +6,18 @@ import {
 	Container,
 	CssBaseline,
 	FormControlLabel,
-	Grid, Link,
+	Grid,
+	Link,
 	TextField,
 	Typography
 } from "@mui/material";
 import Logo from "../src/Logo";
 import {useFormik} from "formik";
 import * as Yup from "yup";
+import {useDispatch} from "react-redux";
+import {loginUser} from "../../store/auth/Action";
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const validationSchema = Yup.object().shape({
 	email: Yup.string().email("Invalid email").required("Email is required"),
@@ -21,13 +26,15 @@ const validationSchema = Yup.object().shape({
 
 const Authentication = () => {
 
+	const dispatch = useDispatch();
 	const handleSubmit = (values) => {
+		dispatch(loginUser(values))
 		console.log("Sign in: ", values)
 	}
 
-	const[notification, setNoti] = useState('')
+	const [notification, setNoti] = useState('')
 	const formik = useFormik({
-		initialValues:{
+		initialValues: {
 			email: "",
 			password: "",
 		},
@@ -43,7 +50,7 @@ const Authentication = () => {
 	}
 	return (
 		<Container component="main" maxWidth="xs">
-			<CssBaseline />
+			<CssBaseline/>
 			<Box
 				sx={{
 					marginTop: 8,
@@ -56,9 +63,7 @@ const Authentication = () => {
 				<Typography component="h1" variant="h5">
 					Sign in
 				</Typography>
-				<Box component="form"
-				     onSubmit={formik.handleSubmit}
-				     noValidate sx={{ mt: 1 }}>
+				<form noValidate onSubmit={formik.handleSubmit} style={{marginTop: 24}}>
 					<TextField
 						margin="normal"
 						required
@@ -89,15 +94,15 @@ const Authentication = () => {
 						helperText={formik.touched.password && formik.errors.password}
 					/>
 					<FormControlLabel
-						control={<Checkbox value="remember" color="primary" />}
+						control={<Checkbox value="remember" color="primary"/>}
 						label="Remember me"
 					/>
-					<p style={{color:"red"}}>{notification}</p>
+					<p style={{color: "red"}}>{notification}</p>
 					<Button
 						type="submit"
 						fullWidth
 						variant="contained"
-						sx={{ mt: 3, mb: 2 }}
+						sx={{mt: 3, mb: 2}}
 					>
 						Login
 					</Button>
@@ -113,8 +118,9 @@ const Authentication = () => {
 							</Link>
 						</Grid>
 					</Grid>
-				</Box>
+				</form>
 			</Box>
+			<ToastContainer/>
 		</Container>
 	);
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import {useNavigate} from "react-router-dom";
-import PostCard from "../homeSection/PostCard";
+import PostCard from "./PostCard";
 import {Divider} from "@mui/material";
 
 const PostDetail = () => {

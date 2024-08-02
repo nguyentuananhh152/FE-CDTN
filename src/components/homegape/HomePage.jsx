@@ -6,10 +6,12 @@ import RightPart from "../RightPart/RightPart";
 import {Route, Routes} from "react-router-dom";
 import Profile from "../profile/Profile";
 import PostDetail from "../Post/PostDetail";
+import {ToastContainer} from "react-toastify";
 
 const HomePage = () => {
 	return (
 		<Grid container xs={12} className='px-5 lg:px-36 justify-between'>
+			<ToastContainer/>
 			<Grid item xs={0} lg={2.5} className='hidden lg:block w-full relative'>
 				<Navigation/>
 			</Grid>

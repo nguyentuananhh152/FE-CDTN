@@ -7,7 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import CommentModal from "./CommentModal";
+import CommentModal from "../homeSection/CommentModal";
 
 const PostCard = () => {
 	//
@@ -40,7 +40,7 @@ const PostCard = () => {
 
 	const handleLikePost = () => {
 		setReact(!react)
-		console.log("Like post, react ", react)
+		console.log("Like/dislike post, react ", react)
 	}
 
 	const handleCreateComment = () => {

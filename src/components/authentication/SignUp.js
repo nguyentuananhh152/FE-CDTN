@@ -12,10 +12,12 @@ import {createTheme, ThemeProvider} from '@mui/material/styles';
 import Logo from "../src/Logo";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format } from 'date-fns';
 import {useFormik} from "formik";
 import * as Yup from "yup";
-
+import {useDispatch} from "react-redux";
+import {registerUser} from "../../store/auth/Action";
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const defaultTheme = createTheme();
 
@@ -28,6 +30,7 @@ const validationSchema = Yup.object().shape({
 })
 
 export default function SignUp() {
+	const dispatch = useDispatch();
 	// Format date to form: yyyy-dd-MM
 	const formatDate = (date) => {
 		if (!date) return '';
@@ -38,17 +41,18 @@ export default function SignUp() {
 	};
 
 	// Submit form
-	const handleSubmit =  (values) => {
+	const handleSubmit = (values) => {
 		const formattedValues = {
-			...values,
-			birth: formatDate(values.birth),
+			...values,  // tạo một bản sao của đối tượng values và đặt tên cho nó là formattedValues
+			birth: formatDate(values.birth),    // định nghĩa lại thuộc tính birth của đối tượng formattedValues
 		};
+		dispatch(registerUser(formattedValues))
 		console.log("Sign up: ", formattedValues);
 	}
 
 	// Define object formik
 	const formik = useFormik({
-		initialValues:{
+		initialValues: {
 			email: "",
 			password: "",
 			firstName: "",
@@ -65,7 +69,7 @@ export default function SignUp() {
 
 	// Function go to tab login
 	const login = () => {
-		window.location.replace('/login')
+		window.location.replace('/signin')
 	}
 
 	return (
@@ -84,7 +88,7 @@ export default function SignUp() {
 					<Typography component="h1" variant="h5">
 						Sign up
 					</Typography>
-					<Box component="form" noValidate onSubmit={formik.handleSubmit} sx={{mt: 3}}>
+					<form noValidate onSubmit={formik.handleSubmit} style={{marginTop: 24}}>
 						<Grid container spacing={2}>
 							<Grid item xs={12}>
 								<TextField
@@ -199,9 +203,10 @@ export default function SignUp() {
 								</Link>
 							</Grid>
 						</Grid>
-					</Box>
+					</form>
 				</Box>
 			</Container>
+			<ToastContainer/>
 		</ThemeProvider>
 	);
 }
