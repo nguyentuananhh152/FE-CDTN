@@ -16,21 +16,6 @@ export const navigationMenu=[
 		path: "/home"
 	},
 	{
-		title: "Explore",
-		icon: <ExploreIcon/>,
-		path: "/explore"
-	},
-	{
-		title: "Notifications",
-		icon: <NotificationIcon/>,
-		path: "/notification"
-	},
-	{
-		title: "Messages",
-		icon: <MessageIcon/>,
-		path: "/messages"
-	},
-	{
 		title: "Profile",
 		icon: <AccountCircleIcon/>,
 		path: "/profile"

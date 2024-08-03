@@ -24,7 +24,7 @@ const PostDetail = () => {
 			</section>
 
 			{/*List comment*/}
-			<section>
+			<section className='space-y-2'>
 				{[1,1,1,1].map((item) => <PostCard/>)}
 			</section>
 		</React.Fragment>

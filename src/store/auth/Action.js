@@ -19,24 +19,6 @@ export const loginUser = (loginData) => async (dispatch) => {
 		if (data.status === 0) {
 			localStorage.setItem("jwt", data.data.access_token);
 			dispatch({type:LOGIN_USER_SUCCESS, payload: data.data.access_token});
-			// toast.success("Login success", {autoClose: 2000, position: "top-right"});
-
-			// get profile
-			// const profileResponse = await axios.get(baseUrl + '/user/my-profile', {
-			// 	headers: {
-			// 		Authorization: `Bearer ${localStorage.getItem('jwt')}`,
-			// 	},
-			// });
-			//
-			// if (profileResponse.data.status === 0) {
-			// 	dispatch({ type: GET_USER_PROFILE_SUCCESS, payload: profileResponse.data.data });
-			// 	toast.info("Profile fetched successfully", { autoClose: 2000, position: "top-right" });
-			// } else {
-			// 	dispatch({ type: GET_USER_PROFILE_FAILURE, payload: profileResponse.data.message });
-			// 	toast.error(profileResponse.data.message, { autoClose: 2000, position: "top-right" });
-			// }
-			// -----
-			window.location.replace("/home")
 		} else if (data.status === 1) {
 			dispatch({type:LOGIN_USER_FAILURE, payload: data.message});
 			// toast.error(data.message);
@@ -69,7 +51,6 @@ export const registerUser = (registerData) => async (dispatch) => {
 
 export const getUserProfile = () => async (dispatch) => {
 	try {
-		toast.info(`Bearer ${localStorage.getItem('jwt')}`)
 		const {data} = await axios.get(baseUrl + '/user/my-profile', {
 			headers: {
 				Authorization: `Bearer ${localStorage.getItem('jwt')}`,
@@ -78,7 +59,7 @@ export const getUserProfile = () => async (dispatch) => {
 
 		if (data.status === 0) {
 			dispatch({type:GET_USER_PROFILE_SUCCESS, payload: data.data});
-			toast.info("Success", {autoClose: 2000, position: "top-right"});
+			toast.info("Get user profile success", {autoClose: 2000, position: "top-right"});
 		} else {
 			toast.error(data.message, {autoClose: 2000, position: "top-right"});
 			dispatch({type:GET_USER_PROFILE_FAILURE, payload: data.message})

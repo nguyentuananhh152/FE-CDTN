@@ -1,5 +1,5 @@
 import './App.css';
-import {Navigate, Route, Routes} from "react-router-dom";
+import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import HomePage from "./components/homegape/HomePage";
 import Authentication from "./components/authentication/Authentication";
 import SignUp from "./components/authentication/SignUp";
@@ -11,15 +11,15 @@ function App() {
 	const jwt = localStorage.getItem("jwt")
 	const {auth} = useSelector(store => store)
 	const dispatch = useDispatch();
-	const [isFetching, setIsFetching] = useState(false);
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		console.log("User", auth.user)
 		if (jwt) {
 			dispatch(getUserProfile())
+			navigate("/home")
 		}
 	}, [auth.jwt]);
-
 
 	return (
 		<div className="">

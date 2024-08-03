@@ -53,7 +53,9 @@ const PostCard = () => {
 			{/*	<p>Your post</p>*/}
 			{/*</div>*/}
 
-			<div className='flex space-x-5'>
+			<div className='flex space-x-5 shadow bg-white mt-3'
+			     style={{ padding: '16px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', borderRadius: '10px' }}
+			>
 				<Avatar
 					className='cursor-pointer'
 					alt='username'
@@ -99,13 +101,13 @@ const PostCard = () => {
 							     alt=""/>
 
 						</div>
-						<div className='py-5 flex flex-wrap justify-between items-center'>
-							<div className={`${react ? "text-pink-600" : "text-gray-600"} space-x-3 flex items-center`}>
+						<div className='py-5 flex flex-wrap justify-items-start items-center space-x-10'>
+							<div className={`${react ? "text-pink-600" : "text-gray-600"} space-x-1 flex items-center`}>
 								{react ? <FavoriteIcon onClick={handleLikePost} className='cursor-pointer'/>
 									: <FavoriteBorderIcon onClick={handleLikePost} className='cursor-pointer'/>}
 								<p>54</p>
 							</div>
-							<div className='space-x-3 flex items-center text-gray-600'>
+							<div className='space-x-1 flex items-center text-gray-600'>
 								<ChatBubbleOutlineIcon className='cursor-pointer' onClick={handleOpenCommentModel}/>
 								<p>43</p>
 							</div>

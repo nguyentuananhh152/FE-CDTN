@@ -18,7 +18,7 @@ const Profile = () => {
 	const {auth} = useSelector(store => store)
 	const navigate = useNavigate();
 
-	const handleBack = () => navigate(-1);
+	const handleBack = () => navigate("/home");
 
 	const [openProfileModal, setOpenProfileModal] = useState(false);
 	const handleOpenProfileModel = () => setOpenProfileModal(true);
@@ -165,7 +165,9 @@ const Profile = () => {
 							</TabList>
 						</Box>
 						<TabPanel value="1">
-							{[1, 1, 1, 1, 1].map((item) => <PostCard/>)}
+							<section className='space-y-2'>
+								{[1, 1, 1, 1].map((item) => <PostCard/>)}
+							</section>
 						</TabPanel>
 						<TabPanel value="2">
 							Media
