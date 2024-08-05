@@ -6,12 +6,12 @@ import {Avatar, Button} from "@mui/material";
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {logout} from "../../store/auth/Action";
 import defaultAvatar from '../src/default-avatar.png';
 
 const Navigation = () => {
-	const {auth} = useSelector(store => store)
+	const user =  JSON.parse(localStorage.getItem("user"));
 	const dispatch = useDispatch();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
@@ -44,7 +44,7 @@ const Navigation = () => {
 				{/*List navigation*/}
 				<div className='space-y-6'>
 					{navigationMenu.map((item) => <div className='cursor-pointer flex space-x-3 items-center'
-					                                   onClick={() => item.title === "Profile" ? navigate(`/profile/${auth.user?.email}`) : navigate(item.path)}>
+					                                   onClick={() => item.title === "Profile" ? navigate(`/profile/${user?.email}`) : navigate(item.path)}>
 						{item.icon}
 						<p className='text-xl'>{item.title}</p>
 					</div>)}
@@ -56,15 +56,15 @@ const Navigation = () => {
 			<div className='flex items-center justify-between'>
 				<div className='flex items-center space-x-3'>
 					<Avatar
-						src={auth.user?.avatar || defaultAvatar}
+						src={user?.avatar || defaultAvatar}
 						// src={defaultAvatar}
-						onClick={() => navigate(`/profile/${auth.user?.email}`)}
+						onClick={() => navigate(`/profile/${user?.email}`)}
 					/>
 					<div>
-						<span>{auth.user?.firstName || "User"}</span>
+						<span>{user?.firstName || "User"}</span>
 						{/*<span>{"User"}</span>*/}
 						<br/>
-						<span className='opacity-70'>@{auth.user?.lastName || "User"}</span>
+						<span className='opacity-70'>@{user?.lastName || "User"}</span>
 						{/*<span className='opacity-70'>@{"User"}</span>*/}
 					</div>
 					<Button

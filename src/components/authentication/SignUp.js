@@ -18,7 +18,7 @@ import {useDispatch} from "react-redux";
 import {registerUser} from "../../store/auth/Action";
 import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import {formatDate} from "../../config/config"
 const defaultTheme = createTheme();
 
 const validationSchema = Yup.object().shape({
@@ -32,13 +32,7 @@ const validationSchema = Yup.object().shape({
 export default function SignUp() {
 	const dispatch = useDispatch();
 	// Format date to form: yyyy-dd-MM
-	const formatDate = (date) => {
-		if (!date) return '';
-		const year = date.getFullYear();
-		const day = date.getDate().toString().padStart(2, '0'); // Đảm bảo ngày luôn có 2 chữ số
-		const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng từ 1-12, phải cộng 1 và đảm bảo có 2 chữ số
-		return `${year}-${day}-${month}`;
-	};
+
 
 	// Submit form
 	const handleSubmit = (values) => {

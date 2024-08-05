@@ -25,7 +25,6 @@ const validationSchema = Yup.object().shape({
 })
 
 const Authentication = () => {
-
 	const dispatch = useDispatch();
 	const handleSubmit = (values) => {
 		dispatch(loginUser(values))

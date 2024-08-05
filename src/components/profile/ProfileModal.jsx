@@ -5,6 +5,11 @@ import Modal from '@mui/material/Modal';
 import {useFormik} from "formik";
 import {Avatar, IconButton, TextField} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import DatePicker from "react-datepicker";
+import {formatDate} from "../../config/config";
+import {editProfile, getUserProfile, registerUser} from "../../store/auth/Action";
+import {useDispatch} from "react-redux";
+import axios from "axios";
 
 const style = {
 	position: 'absolute',
@@ -22,31 +27,60 @@ const style = {
 
 export default function ProfileModal({open, handleClose}) {
 	// const [open, setOpen] = React.useState(false);
+	const user =  JSON.parse(localStorage.getItem("user"));
+	const dispatch = useDispatch();
 	const [uploading, setUploading] = React.useState(false);
 
 	const handleSubmit = (values) => {
-		console.log("Submit edit profile", values);
+		const formattedValues = {
+			...values,
+			birth: formatDate(values.birth),
+		};
+		dispatch(editProfile(formattedValues));
+		window.location.reload();
+		localStorage.removeItem("user")
+		console.log("Submit edit profile", formattedValues);
 	}
 
-	const handleImageChange = (event) => {
+	const handleImageChange = async (event) => {
 		setUploading(true);
 		const {name} = event.target;
 		const file = event.target.files[0];
 		formik.setFieldValue(name, file);
 		setUploading(false);
+
+		// Data to upload
+		const formData = new FormData();
+		formData.append('file', file);
+		// Upload avatar
+		try {
+			// Gửi tệp ảnh lên server
+			const response = await axios.post('/api/upload', formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			});
+
+			// Lưu URL hoặc đường dẫn ảnh từ phản hồi server
+			formik.setFieldValue(name, response.data.fileUrl); // hoặc response.data.path tùy thuộc vào phản hồi server
+		} catch (error) {
+			console.error('Error uploading image:', error);
+		} finally {
+			setUploading(false);
+		}
 	}
 
 	const formik = useFormik({
 		initialValues: {
-			firstName: "",
-			lastName: "",
-			address: "",
-			phoneNumber: "",
-			birth: "",
-			blog: "",
-			gender: "",
-			avatar: "",
-			coverImage: ""
+			firstName: user?.firstName || "",
+			lastName: user?.lastName || "",
+			address: user?.address || "",
+			phoneNumber: user?.phoneNumber || "",
+			birth: user?.birth ? new Date(user.birth) : new Date(),
+			blog: user?.blog || "",
+			gender: user?.gender || "",
+			avatar: user?.avatar || "",
+			coverImage: user?.coverImage || "",
 		},
 		onSubmit: handleSubmit
 	});
@@ -136,6 +170,26 @@ export default function ProfileModal({open, handleClose}) {
 								/>
 								<TextField
 									fullWidth
+									id="gender"
+									name="gender"
+									label="Gender"
+									value={formik.values.gender}
+									onChange={formik.handleChange}
+									error={formik.touched.gender && Boolean(formik.errors.gender)}
+									helperText={formik.touched.gender && formik.errors.gender}
+								/>
+								<TextField
+									fullWidth
+									id="phoneNumber"
+									name="phoneNumber"
+									label="Phone Number"
+									value={formik.values.phoneNumber}
+									onChange={formik.handleChange}
+									error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+									helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
+								/>
+								<TextField
+									fullWidth
 									id="address"
 									name="address"
 									label="Address"
@@ -144,11 +198,24 @@ export default function ProfileModal({open, handleClose}) {
 									error={formik.touched.address && Boolean(formik.errors.address)}
 									helperText={formik.touched.address && formik.errors.address}
 								/>
-								<div className='my-3'>
-									<p className='text-lg'>Birth date . Edit</p>
-									<p className='text-2xl'>October 26, 1999</p>
+								<div className=' flex my-3 space-x-5 border border-gray-500 p-3 rounded-md'>
+									<p>Birth</p>
+									<DatePicker
+										variant="outlined"
+										label="Select Date"
+										selected={formik.values.birth}
+										onChange={(date) => formik.setFieldValue('birth', date)}
+										renderInput={(params) => <TextField
+											{...params}
+											label="Birth"
+											name="birth"
+											error={formik.touched.birth && Boolean(formik.errors.birth)}
+											helperText={formik.touched.birth && formik.errors.birth}
+											fullWidth
+
+										/>}
+									/>
 								</div>
-								<p className='py-3 text-lg'>Edit professional profile</p>
 							</div>
 						</div>
 					</form>
