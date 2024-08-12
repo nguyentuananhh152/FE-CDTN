@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import {useNavigate} from "react-router-dom";
 import {Avatar, Box, Button, Tab} from "@mui/material";
@@ -11,12 +11,14 @@ import {TabContext, TabList, TabPanel} from "@mui/lab";
 import ProfileModal from "./ProfileModal";
 import defaultAvatar from '../src/default-avatar.png';
 import coverImage from '../src/cover-image.png';
+import axios from "axios";
+import {toast} from "react-toastify";
 
 const Profile = () => {
 	const [tabValue, setTabValue] = useState("1");
 	const user = JSON.parse(localStorage.getItem("user"));
 	const navigate = useNavigate();
-
+	const [posts, setPosts] = useState([]);
 	const handleBack = () => navigate("/home");
 
 	const [openProfileModal, setOpenProfileModal] = useState(false);
@@ -39,24 +41,44 @@ const Profile = () => {
 		return `${day}-${month}-${year}`;
 	};
 
+	useEffect(() => {
+		const fetchPosts = async () => {
+			try {
+				const jwt = localStorage.getItem('jwt')
+				console.log(jwt)
+				const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/post/my-posts`, {
+					headers: {
+						Authorization: `Bearer ${jwt}`,
+					}
+				});
+				setPosts(response.data.data);
+			} catch (error) {
+				toast.error("Failed to get my post");
+			}
+		};
+
+		fetchPosts();
+	}, []);
+
 	return (
 		<div>
-			<section className='z-50 flex items-center sticky top-0 bg-opacity-95'>
+			<section className='z-50 flex items-center sticky bg-opacity-95'>
 				<KeyboardBackspaceIcon className='cursor-pointer' onClick={handleBack}/>
 				<h1 className='py-5 text-xl font-bold opacity-90 ml-5'>Profile</h1>
 			</section>
 			<section>
 				<img className='w-[100%] h-[15rem] object-cover shadow-2xl'
-				     src={user?.coverImage || coverImage}
-				     alt="cover"/>
+				     src={user?.coverImage ? `${process.env.REACT_APP_BASE_URL_PHOTO}${user.coverImage}` : coverImage}
+				     alt="cover image"/>
 			</section>
 
 			<section className='pl-6'>
 				<div className='flex justify-between items-start mt-5 h-[5rem] bg`'>
 					<Avatar
-						className='transform -translate-y-24'
+						className='transform -translate-y-24 bg-white'
 						alt='avatar'
-						src={user?.avatar || defaultAvatar}
+						src={user?.avatar ? `${process.env.REACT_APP_BASE_URL_PHOTO}${user.avatar}` : defaultAvatar}
+						onClick={() => console.log(`${process.env.REACT_APP_BASE_URL_PHOTO}${user.avatar}`)}
 						sx={{width: "10rem", height: "10rem", border: "4px solid #60A5FA"}}/>
 					{true ? (
 						<Button
@@ -145,7 +167,9 @@ const Profile = () => {
 						</Box>
 						<TabPanel value="1">
 							<section className='space-y-2'>
-								{[1, 1, 1, 1].map((item) => <PostCard/>)}
+								{posts.map((post) => (
+									<PostCard key={post.id} post={post}/>
+								))}
 							</section>
 						</TabPanel>
 						<TabPanel value="2">
@@ -159,7 +183,7 @@ const Profile = () => {
 				<ProfileModal handleClose={handleClose} open={openProfileModal}/>
 			</section>
 		</div>
-	);
+);
 };
 
 export default Profile;

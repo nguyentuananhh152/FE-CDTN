@@ -1,12 +1,13 @@
 import React from 'react';
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import PostCard from "./PostCard";
 import {Divider} from "@mui/material";
 
 const PostDetail = () => {
 	const navigate = useNavigate();
-
+	const location = useLocation();
+	const { post } = location.state || {};
 	const handleBack = () => navigate(-1);
 
 	return (
@@ -19,14 +20,14 @@ const PostDetail = () => {
 
 			{/*	*/}
 			<section>
-				<PostCard/>
+				<PostCard post={post}/>
 				<Divider sx={{margin: "2rem 0rem", }}/>
 			</section>
 
 			{/*List comment*/}
-			<section className='space-y-2'>
-				{[1,1,1,1].map((item) => <PostCard/>)}
-			</section>
+			{/*<section className='space-y-2'>*/}
+			{/*	{[1,1,1,1].map((item) => <PostCard/>)}*/}
+			{/*</section>*/}
 		</React.Fragment>
 	);
 };

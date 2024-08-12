@@ -56,7 +56,7 @@ const Navigation = () => {
 			<div className='flex items-center justify-between'>
 				<div className='flex items-center space-x-3'>
 					<Avatar
-						src={user?.avatar || defaultAvatar}
+						src={user?.avatar ? `${process.env.REACT_APP_BASE_URL_PHOTO}${user.avatar}` : defaultAvatar}
 						// src={defaultAvatar}
 						onClick={() => navigate(`/profile/${user?.email}`)}
 					/>
