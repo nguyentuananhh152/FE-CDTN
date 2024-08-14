@@ -134,7 +134,7 @@ export const editProfile = (dataUpdate) => async (dispatch) => {
 			toast.success("Update information success", {autoClose: 2000, position: "top-right"});
 		} else if (data.status === 1) {
 			dispatch({type:UPDATE_USER_PROFILE_FAILURE, payload: data.message})
-			toast.error("Update failed", {autoClose: 2000, position: "top-right"});
+			toast.error("Update profile failed", {autoClose: 2000, position: "top-right"});
 		}
 
 	} catch (error) {

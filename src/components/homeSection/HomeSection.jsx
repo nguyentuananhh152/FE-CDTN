@@ -10,6 +10,7 @@ import defaultAvatar from '../src/default-avatar.png';
 import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import {toast} from "react-toastify";
+import coverImage from "../src/cover-image.png";
 
 
 const HomeSection = () => {
@@ -18,7 +19,7 @@ const HomeSection = () => {
 	const navigate = useNavigate();
 	const user = JSON.parse(localStorage.getItem("user"));
 	const [posts, setPosts] = useState([]);
-
+	const [imagePreview, selectImagePreview] = useState(null);
 	const [uploadingImage, setUploadingImage] = useState(false);
 	const [selectedImage, setSelectedImage] = useState("");
 	const handleSubmit = async (values) => {
@@ -45,6 +46,8 @@ const HomeSection = () => {
 			});
 			formik.resetForm();
 			setSelectedImage(null);
+			selectImagePreview(null);
+			window.location.reload();
 		} catch (error) {
 			console.error("Error creating post", error);
 		}
@@ -70,6 +73,11 @@ const HomeSection = () => {
 		formik.setFieldValue("image", files); // lưu các file vào Formik
 		setSelectedImage(URL.createObjectURL(files[0])); // chỉ hiển thị hình ảnh đầu tiên
 		setUploadingImage(false);
+
+		if (files) {
+			const previewUrl = URL.createObjectURL(files[0]);
+			selectImagePreview(previewUrl);
+		}
 	}
 
 	useEffect(() => {
@@ -131,10 +139,10 @@ const HomeSection = () => {
 									cursor-pointer: Đặt kiểu con trỏ chuột thành con trỏ tay chỉ (thường sử dụng cho các phần tử có thể nhấp được).*/}
 									<label className='flex items-center space-x-2 rounded-md cursor-pointer'>
 										<ImageIcon className='text-[#1d9bf0]'/>
-										<input type="file" name="imageFile" className='hidden'
+										<input type="file" accept="image/*" name="imageFile" className='hidden'
 										       onChange={handleSelectImage}/>
+
 									</label>
-									<FmdGoodIcon className='text-[#1d9bf0]'/>
 									<TagFacesIcon className='text-[#1d9bf0]'/>
 								</div>
 								<div>
@@ -146,10 +154,14 @@ const HomeSection = () => {
 										variant='contained'
 										type="submit"
 									>
-										Tweet
+										post
 									</Button>
 								</div>
-
+							</div>
+							<div>
+								{imagePreview ? <img className='w-full h-[12rem] object-cover object-center'
+								                     src={imagePreview}
+								                     alt="cover image"/> : <></>}
 							</div>
 						</form>
 
@@ -157,9 +169,11 @@ const HomeSection = () => {
 				</div>
 			</section>
 			<section className='space-y-2'>
-				{posts.map((post) => (
-					<PostCard key={post.id} post={post}/>
-				))}
+				{posts
+					.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate)) // Sắp xếp theo thời gian
+					.map((post) => (
+						<PostCard key={post.id} post={post}/>
+					))}
 			</section>
 		</div>
 	);

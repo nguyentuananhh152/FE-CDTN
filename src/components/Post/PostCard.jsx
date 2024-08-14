@@ -27,7 +27,7 @@ const PostCard = ({post}) => {
 	const handleClose = () => {
 		setAnchorEl(null);
 	};
-
+	// const timeAgo = moment(post?.createdDate).fromNow();
 	const handleDeletePost = async (id) => {
 		try {
 			const jwt = localStorage.getItem('jwt')
@@ -129,7 +129,7 @@ const PostCard = ({post}) => {
 								}}
 							>
 								<MenuItem onClick={() => handleDeletePost(post?.id)}>Delete</MenuItem>
-								<MenuItem onClick={handleReportPost}>Report</MenuItem>
+								<MenuItem onClick={handleReportPost}>Edit</MenuItem>
 							</Menu>
 						</div>
 					</div>
@@ -178,7 +178,7 @@ const PostCard = ({post}) => {
 				</div>
 			</div>
 			<section>
-				<CommentModal open={openCommentModal} handleClose={handleCloseCommentModal}/>
+				<CommentModal open={openCommentModal} handleClose={handleCloseCommentModal} postId={post.id} />
 			</section>
 		</React.Fragment>
 	);

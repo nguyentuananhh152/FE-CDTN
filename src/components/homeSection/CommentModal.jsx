@@ -10,6 +10,7 @@ import TagFacesIcon from "@mui/icons-material/TagFaces";
 import {useFormik} from "formik";
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from "@mui/icons-material/Close";
+import axios from "axios";
 
 const style = {
 	position: 'absolute',
@@ -25,27 +26,33 @@ const style = {
 	borderRadius: 4
 };
 
-export default function CommentModal({handleClose, open}) {
-	const [uploadingImage, setUploadingImage] = useState(false);
-	const [selectedImage, setSelectedImage] = useState("");
+export default function CommentModal({handleClose, open, postId}) {
+	// const [uploadingImage, setUploadingImage] = useState(false);
+	// const [selectedImage, setSelectedImage] = useState("");
 	const navigate = useNavigate();
 
-	const handleSubmit = (values) => {
-		console.log("Comment ", values);
+	const handleSubmit = async (values) => {
+		const jwt = localStorage.getItem('jwt')
+		const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comment/create`, values, {
+			headers: {
+				Authorization: `Bearer ${jwt}`,
+			}
+		});
+		console.log(values)
 	}
-	const handleSelectImage = (event) => {
-		setUploadingImage(true);
-		const imgUrl = event.target.files[0];
-		formik.setFieldValue("image", imgUrl);
-		setSelectedImage(imgUrl)
-		setUploadingImage(false);
-	}
+	// const handleSelectImage = (event) => {
+	// 	setUploadingImage(true);
+	// 	const imgUrl = event.target.files[0];
+	// 	formik.setFieldValue("image", imgUrl);
+	// 	setSelectedImage(imgUrl)
+	// 	setUploadingImage(false);
+	// }
 	const formik = useFormik({
 		initialValues: {
 			content: "",
-			postId: "",
-			image: ""
+			postId: postId,
 		},
+		enableReinitialize: true,
 		onSubmit: handleSubmit
 	})
 
@@ -84,12 +91,7 @@ export default function CommentModal({handleClose, open}) {
 									</div>
 									<div className='flex justify-between items-center mt-5'>
 										<div className='flex space-x-5 items-center'>
-											<label
-												className='flex items-center space-x-2 rounded-md cursor-pointer'>
-												<ImageIcon className='text-[#1d9bf0]'/>
-												<input type="file" name="imageFile" className='hidden'
-												       onChange={handleSelectImage}/>
-											</label>
+
 											<TagFacesIcon className='text-[#1d9bf0]'/>
 										</div>
 										<div>

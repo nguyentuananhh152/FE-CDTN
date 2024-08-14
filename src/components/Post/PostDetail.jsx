@@ -1,14 +1,38 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import PostCard from "./PostCard";
 import {Divider} from "@mui/material";
+import axios from "axios";
 
 const PostDetail = () => {
 	const navigate = useNavigate();
-	const location = useLocation();
-	const { post } = location.state || {};
+	const [post, setPost] = useState(null);
+	const [comments, setComments] = useState([]);
+	const { id } = useParams();
 	const handleBack = () => navigate(-1);
+	console.log("Post id: ", id)
+
+	useEffect(() => {
+		const fetchPost = async () => {
+			try {
+				console.log(id)
+				const jwt = localStorage.getItem('jwt');
+				const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/post/get/${id}`, {
+					headers: {
+						Authorization: `Bearer ${jwt}`,
+					},
+				});
+				setPost(response.data.data);
+				setComments(response.data.data.comments);
+				console.log(response.data.data);
+			} catch (error) {
+				console.error("Failed to fetch post:", error);
+			}
+		};
+
+		fetchPost();
+	}, [id]);
 
 	return (
 		<React.Fragment>
@@ -20,7 +44,7 @@ const PostDetail = () => {
 
 			{/*	*/}
 			<section>
-				<PostCard post={post}/>
+				{post ? <PostCard post={post}/> : <></>}
 				<Divider sx={{margin: "2rem 0rem", }}/>
 			</section>
 

@@ -34,7 +34,7 @@ const RightPart = () => {
 			<section className='my-5'>
 				<Button variant='contained' sx={{padding: "10px", paddingX: "20px", borderRadius: "25px",}}
 				onClick={handleLogout}>
-					Logout
+					Log out
 				</Button>
 			</section>
 		</div>

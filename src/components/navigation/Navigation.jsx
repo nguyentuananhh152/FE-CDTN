@@ -58,7 +58,10 @@ const Navigation = () => {
 					<Avatar
 						src={user?.avatar ? `${process.env.REACT_APP_BASE_URL_PHOTO}${user.avatar}` : defaultAvatar}
 						// src={defaultAvatar}
-						onClick={() => navigate(`/profile/${user?.email}`)}
+						onClick={() => {
+							navigate(`/profile/${user?.email}`)
+							window.location.reload();
+						}}
 					/>
 					<div>
 						<span>{user?.firstName || "User"}</span>
@@ -85,7 +88,7 @@ const Navigation = () => {
 							'aria-labelledby': 'basic-button',
 						}}
 					>
-						<MenuItem onClick={handleLogout}>Logout</MenuItem>
+						<MenuItem onClick={handleLogout}>Log out</MenuItem>
 					</Menu>
 				</div>
 			</div>

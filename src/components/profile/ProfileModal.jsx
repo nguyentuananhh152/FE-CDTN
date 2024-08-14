@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
@@ -7,9 +8,11 @@ import {Avatar, IconButton, TextField} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import DatePicker from "react-datepicker";
 import {formatDate} from "../../config/config";
-import {editProfile, getUserProfile, registerUser} from "../../store/auth/Action";
+import {editProfile} from "../../store/auth/Action";
 import {useDispatch} from "react-redux";
 import axios from "axios";
+import defaultAvatar from "../src/default-avatar.png";
+import coverImage from "../src/cover-image.png";
 
 const style = {
 	position: 'absolute',
@@ -27,42 +30,77 @@ const style = {
 
 export default function ProfileModal({open, handleClose}) {
 	// const [open, setOpen] = React.useState(false);
-	const user =  JSON.parse(localStorage.getItem("user"));
+	const user = JSON.parse(localStorage.getItem("user"));
 	const dispatch = useDispatch();
 	const [uploading, setUploading] = React.useState(false);
+	const [avatar, selectAvatar] = useState(null);
+	const [avatarPreview, selectAvatarPreview] = useState(null);
+	const [cover, selectCover] = useState(null);
+	const [coverPreview, selectCoverPreview] = useState(null);
 
 	const handleSubmit = (values) => {
 		const formattedValues = {
 			...values,
 			birth: formatDate(values.birth),
 		};
-		dispatch(editProfile(formattedValues));
-		window.location.reload();
 		localStorage.removeItem("user")
-		console.log("Submit edit profile", formattedValues);
+		dispatch(editProfile(formattedValues));
+		if (avatar) {
+			handleUpload('avatar')
+		}
+		if (cover) {
+			handleUpload('cover')
+		}
+		window.location.reload();
 	}
 
-	const handleImageChange = async (event) => {
-		setUploading(true);
-		const {name} = event.target;
+	const handleImageChangeAvatar = async (event) => {
 		const file = event.target.files[0];
-		formik.setFieldValue(name, file);
-		setUploading(false);
+		if (file) {
+			const previewUrl = URL.createObjectURL(file);
+			selectAvatar(file);
+			selectAvatarPreview(previewUrl);
+		}
+	}
 
-		// Data to upload
+	const handleImageChangeCover = async (event) => {
+		const file = event.target.files[0];
+		if (file) {
+			const previewUrl = URL.createObjectURL(file);
+			selectCover(file)
+			selectCoverPreview(previewUrl);
+		}
+	}
+
+	const handleUpload = async (type) => {
 		const formData = new FormData();
-		formData.append('file', file);
+		if (type === 'avatar') {
+			formData.append('file', avatar);
+		}
+		if (type === 'cover') {
+			formData.append('file', cover);
+		}
+
+		formData.append('type', type);
+		formData.append('ref', '');
+
 		// Upload avatar
 		try {
-			// Gửi tệp ảnh lên server
-			const response = await axios.post('/api/upload', formData, {
+			const jwt = localStorage.getItem('jwt');
+			const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/media/upload`, formData, {
 				headers: {
+					Authorization: `Bearer ${jwt}`,
 					'Content-Type': 'multipart/form-data',
 				},
 			});
+			if (type === 'avatar') {
+				user.avatar = response.data.data
+			}
+			if (type === 'cover') {
+				user.coverImage = response.data.data
+			}
+			localStorage.setItem('user', JSON.stringify(user));
 
-			// Lưu URL hoặc đường dẫn ảnh từ phản hồi server
-			formik.setFieldValue(name, response.data.fileUrl); // hoặc response.data.path tùy thuộc vào phản hồi server
 		} catch (error) {
 			console.error('Error uploading image:', error);
 		} finally {
@@ -111,26 +149,30 @@ export default function ProfileModal({open, handleClose}) {
 								{/*Cover image*/}
 								<div className='w-full'>
 									<div className='relative'>
-										<img
-											className='w-full h-[12rem] object-cover object-center'
-											src="https://drive.google.com/file/d/1taJksKywXo7E73mCAEK28nPrRmOburl5/view"
-											alt=""/>
+										<img className='w-full h-[12rem] object-cover object-center'
+										     src={coverPreview ? coverPreview : (user?.coverImage ? `${process.env.REACT_APP_BASE_URL_PHOTO}${user.coverImage}` : coverImage)}
+										     alt="cover image"/>
 										<input
 											type="file"
+											accept="image/*"
 											className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'
-											onChange={handleImageChange}
+											onChange={handleImageChangeCover}
 											name="coverImage"/>
 									</div>
 								</div>
 								{/*Avatar image*/}
 								<div className='w-full transform -translate-y-20 ml-4 h-[6rem]'>
 									<div className='relative'>
-										<Avatar src="../src/logo.svg"
-										        sx={{width: "10rem", height: "10rem", border: "4px solid white"}}/>
+										<Avatar
+											alt='avatar'
+											src={avatarPreview ? avatarPreview : (user?.avatar ? `${process.env.REACT_APP_BASE_URL_PHOTO}${user.avatar}` : defaultAvatar)}
+											onClick={() => console.log(`${process.env.REACT_APP_BASE_URL_PHOTO}${user.avatar}`)}
+											sx={{width: "10rem", height: "10rem", border: "4px solid white", background: "white"}}/>
 										<input
 											type="file"
+											accept="image/*"
 											className='absolute top-0 left-0 w-[10rem] h-full opacity-0 cursor-pointer'
-											onChange={handleImageChange}
+											onChange={handleImageChangeAvatar}
 											name="avatar"
 										/>
 									</div>

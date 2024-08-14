@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {Avatar, Box, Button, Tab} from "@mui/material";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
@@ -16,7 +16,9 @@ import {toast} from "react-toastify";
 
 const Profile = () => {
 	const [tabValue, setTabValue] = useState("1");
-	const user = JSON.parse(localStorage.getItem("user"));
+	const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || {});
+	const email = JSON.parse(localStorage.getItem("user"))?.email;
+	const { id } = useParams();
 	const navigate = useNavigate();
 	const [posts, setPosts] = useState([]);
 	const handleBack = () => navigate("/home");
@@ -41,22 +43,42 @@ const Profile = () => {
 		return `${day}-${month}-${year}`;
 	};
 
-	useEffect(() => {
-		const fetchPosts = async () => {
-			try {
-				const jwt = localStorage.getItem('jwt')
-				console.log(jwt)
-				const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/post/my-posts`, {
-					headers: {
-						Authorization: `Bearer ${jwt}`,
-					}
-				});
-				setPosts(response.data.data);
-			} catch (error) {
-				toast.error("Failed to get my post");
-			}
-		};
+	const fetchPosts = async () => {
+		try {
+			console.log("email: ", id);
+			// todo: get posts of other
+			const jwt = localStorage.getItem('jwt')
+			console.log(jwt)
+			const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/post/${id}`, {
+				headers: {
+					Authorization: `Bearer ${jwt}`,
+				}
+			});
+			setPosts(response.data.data);
+		} catch (error) {
+			toast.error("Failed to get my post");
+		}
+	};
 
+
+	const fetchProfile = async () => {
+		try {
+			console.log("email: ", id);
+			const jwt = localStorage.getItem('jwt')
+			console.log(jwt)
+			const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/user/profile/${id}`, {
+				headers: {
+					Authorization: `Bearer ${jwt}`,
+				}
+			});
+			setUser(response.data.data)
+		} catch (error) {
+			toast.error(`Failed to get profile: ${id}`);
+		}
+	};
+
+	useEffect(() => {
+		fetchProfile();
 		fetchPosts();
 	}, []);
 
@@ -80,7 +102,7 @@ const Profile = () => {
 						src={user?.avatar ? `${process.env.REACT_APP_BASE_URL_PHOTO}${user.avatar}` : defaultAvatar}
 						onClick={() => console.log(`${process.env.REACT_APP_BASE_URL_PHOTO}${user.avatar}`)}
 						sx={{width: "10rem", height: "10rem", border: "4px solid #60A5FA"}}/>
-					{true ? (
+					{(id === email) ? (
 						<Button
 							onClick={handleOpenProfileModel}
 							variant='contained' sx={{borderRadius: "20px"}}>Edit</Button>
@@ -167,9 +189,11 @@ const Profile = () => {
 						</Box>
 						<TabPanel value="1">
 							<section className='space-y-2'>
-								{posts.map((post) => (
-									<PostCard key={post.id} post={post}/>
-								))}
+								{posts
+									.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate)) // Sắp xếp theo thời gian
+									.map((post) => (
+										<PostCard key={post.id} post={post}/>
+									))}
 							</section>
 						</TabPanel>
 						<TabPanel value="2">
