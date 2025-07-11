@@ -1,7 +1,9 @@
 ## Social media
-### How to start
-    start: npm start
-    
+### Quick start
+install: npm install legacy-peer-deps
+    or: npm install --force
+start: npm start
+    npm start
 ### Component, library 
     MUI (material): npm install @mui/material @emotion/react @emotion/styled
     MUI (icon): npm install @mui/icons-material @mui/material @emotion/styled @emotion/react

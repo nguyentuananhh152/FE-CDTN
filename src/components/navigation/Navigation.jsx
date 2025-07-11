@@ -9,8 +9,11 @@ import MenuItem from '@mui/material/MenuItem';
 import {useDispatch} from "react-redux";
 import {logout} from "../../store/auth/Action";
 import defaultAvatar from '../src/default-avatar.png';
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 const Navigation = () => {
+	const { t } = useTranslation();
 	const user =  JSON.parse(localStorage.getItem("user"));
 	const dispatch = useDispatch();
 	const [anchorEl, setAnchorEl] = React.useState(null);
@@ -46,7 +49,7 @@ const Navigation = () => {
 					{navigationMenu.map((item) => <div className='cursor-pointer flex space-x-3 items-center'
 					                                   onClick={() => item.title === "Profile" ? navigate(`/profile/${user?.email}`) : navigate(item.path)}>
 						{item.icon}
-						<p className='text-xl'>{item.title}</p>
+						<p className='text-xl'>{t(item.title)}</p>
 					</div>)}
 				</div>
 

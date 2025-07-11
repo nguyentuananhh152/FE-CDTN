@@ -11,8 +11,11 @@ import CommentModal from "../homeSection/CommentModal";
 import defaultAvatar from '../src/default-avatar.png';
 import axios from "axios";
 import {toast} from "react-toastify";
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 const PostCard = ({post}) => {
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [liked, setLiked] = useState(post.liked);
 	const [openCommentModal, setOpenCommentModal] = useState(false);
@@ -71,7 +74,7 @@ const PostCard = ({post}) => {
 				}
 			});
 
-			const response2 = await axios.get(`${process.env.REACT_APP_BASE_URL}/post/${id}`, {
+			const response2 = await axios.get(`${process.env.REACT_APP_BASE_URL}/post/get/${id}`, {
 				headers: {
 					Authorization: `Bearer ${jwt}`,
 				}
@@ -128,8 +131,8 @@ const PostCard = ({post}) => {
 									'aria-labelledby': 'basic-button',
 								}}
 							>
-								<MenuItem onClick={() => handleDeletePost(post?.id)}>Delete</MenuItem>
-								<MenuItem onClick={handleReportPost}>Edit</MenuItem>
+								<MenuItem onClick={() => handleDeletePost(post?.id)}>{t('Delete')}</MenuItem>
+								<MenuItem onClick={handleReportPost}>{t('Edit')}</MenuItem>
 							</Menu>
 						</div>
 					</div>

@@ -13,8 +13,11 @@ import defaultAvatar from '../src/default-avatar.png';
 import coverImage from '../src/cover-image.png';
 import axios from "axios";
 import {toast} from "react-toastify";
+import { useTranslation } from 'react-i18next';
+import '../../i18n';
 
 const Profile = () => {
+	const { t } = useTranslation();
 	const [tabValue, setTabValue] = useState("1");
 	const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || {});
 	const email = JSON.parse(localStorage.getItem("user"))?.email;
@@ -86,7 +89,7 @@ const Profile = () => {
 		<div>
 			<section className='z-50 flex items-center sticky bg-opacity-95'>
 				<KeyboardBackspaceIcon className='cursor-pointer' onClick={handleBack}/>
-				<h1 className='py-5 text-xl font-bold opacity-90 ml-5'>Profile</h1>
+				<h1 className='py-5 text-xl font-bold opacity-90 ml-5'>{t('Profile')}</h1>
 			</section>
 			<section>
 				<img className='w-[100%] h-[15rem] object-cover shadow-2xl'
@@ -105,7 +108,7 @@ const Profile = () => {
 					{(id === email) ? (
 						<Button
 							onClick={handleOpenProfileModel}
-							variant='contained' sx={{borderRadius: "20px"}}>Edit</Button>
+							variant='contained' sx={{borderRadius: "20px"}}>{t('Edit')}</Button>
 					) : (
 						<Button
 							onClick={handleFollowUser}
@@ -128,11 +131,11 @@ const Profile = () => {
 					<div className='flex items-center space-x-5'>
 						<div className='flex items-center space-x-1 font-semibold'>
 							<span>{user?.follower}</span>
-							<span className='text-gray-500'> Follower</span>
+							<span className='text-gray-500'> {t('Follower')}</span>
 						</div>
 						<div className='flex items-center space-x-1 font-semibold'>
 							<span>{user?.following}</span>
-							<span className='text-gray-500'> Following</span>
+							<span className='text-gray-500'> {t('Following')}</span>
 						</div>
 					</div>
 					<table className='w-full border-collapse'>
@@ -168,7 +171,7 @@ const Profile = () => {
 							<tr>
 								<td className='py-1 text-gray-500'>
 									<CalendarMonthIcon style={{verticalAlign: 'middle'}}/>
-									<span className='ml-2'>Joined at {formatDate(user.createdDate)}</span>
+									<span className='ml-2'>{t('Joined at')} {formatDate(user.createdDate)}</span>
 								</td>
 							</tr>
 						)}
@@ -183,8 +186,8 @@ const Profile = () => {
 					<TabContext value={tabValue}>
 						<Box sx={{borderBottom: 1, borderColor: 'divider'}}>
 							<TabList onChange={handleTabChange} aria-label='lab API tabs example'>
-								<Tab label="Posts" value="1"/>
-								<Tab label="Media" value="2"/>
+								<Tab label={t('Posts')} value="1"/>
+								<Tab label={t('Media')} value="2"/>
 							</TabList>
 						</Box>
 						<TabPanel value="1">

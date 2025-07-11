@@ -1,10 +1,28 @@
-flex: Container flex để sắp xếp các phần tử con.
-items-center: Canh giữa các phần tử con theo trục dọc.
-justify-between: Phân bố các phần tử con dọc theo trục ngang, với phần tử đầu tiên ở đầu và phần tử cuối cùng ở cuối.
-px-4 và lg:px-8: Padding ngang là 1rem, và trên màn hình lớn padding ngang là 2rem.
-pb-4: Padding dưới là 1rem.
-w-full: Chiều rộng là 100%.
-relative: Vị trí tương đối.
-space-x-4: Khoảng cách ngang giữa các phần tử con là 1rem.
-opacity-70: Độ mờ là 70%.
-hidden lg:block: Ẩn phần tử đầu tiên trên màn hình nhỏ, nhưng hiển thị trên màn hình lớn.
+i18n:
+- install
+    npm install i18next react-i18next --legacy-peer-deps
+    npm install --save-dev i18next-parser --legacy-peer-deps
+
+- Tạo file i18next-parser.config.js ở thư mục gốc với nội dung sau:
+    module.exports = {
+        locales: ['en', 'vi'],
+        output: 'src/i18n/locales/$LOCALE.json',
+        input: [
+            'src/**/*.{js,jsx}',
+        ],
+        defaultValue: '',
+        keySeparator: false,
+        namespaceSeparator: false,
+    };
+
+- Tạo folder output:
+    mkdir -p src/i18n/locales
+
+- Tạo file output
+    vi.json
+    en.json
+
+- Chạy lệnh sau để quét toàn bộ code và sinh file en.json, vi.json:
+    npx i18next 'src/**/*.{js,jsx}'
+      npx i18next --config i18next-parser.config.js 'src/**/*.{js,jsx}'
+

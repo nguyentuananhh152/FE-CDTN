@@ -4,6 +4,9 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import {Button, Divider} from "@mui/material";
 import {logout} from "../../store/auth/Action";
 import {useDispatch} from "react-redux";
+import { useTranslation } from 'react-i18next';
+import '../../i18n/index';
+import { t } from 'i18next';
 
 const RightPart = () => {
 	const dispatch = useDispatch();
@@ -19,22 +22,39 @@ const RightPart = () => {
 		dispatch(logout())
 		window.location.replace("/signin")
 	}
+
+	const { i18n } = useTranslation();
+
+	const handleChange = (e) => {
+	  i18n.changeLanguage(e.target.value);
+	};
+
 	return (
 		// sticky-0
 		<div className='py-5 sticky top m-5'>
 			<div className='flex items-center justify-center'>
 				<div className='relative flex items-center border border-gray-500 rounded-full'>
-					<input type="text" className='py-3 rounded-full text-gray-500 w-full pl-12' placeholder='Seach...'/>
+					<input type="text" className='py-3 rounded-full text-gray-500 w-full pl-12' placeholder={`${t('Search')}...`}/>
 					<div className='absolute top-0 left-0 pl-3 pt-3'>
 						<SearchIcon className='text-gray-500'/>
 					</div>
 				</div>
 				<Brightness4Icon className='ml-3 cursor-pointer' onClick={handleChangeTheme}/>
 			</div>
+			<div>
+			<select
+				value={i18n.language}
+				onChange={handleChange}
+				className="border rounded px-2 py-1"
+				>
+				<option value="en">English</option>
+				<option value="vi">Tiếng Việt</option>
+			</select>
+			</div>
 			<section className='my-5'>
 				<Button variant='contained' sx={{padding: "10px", paddingX: "20px", borderRadius: "25px",}}
 				onClick={handleLogout}>
-					Log out
+					{t('Logout')}
 				</Button>
 			</section>
 		</div>

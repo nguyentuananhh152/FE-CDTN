@@ -11,6 +11,7 @@ import {useFormik} from "formik";
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
+import { useTranslation } from 'react-i18next';
 
 const style = {
 	position: 'absolute',
@@ -30,7 +31,7 @@ export default function CommentModal({handleClose, open, postId}) {
 	// const [uploadingImage, setUploadingImage] = useState(false);
 	// const [selectedImage, setSelectedImage] = useState("");
 	const navigate = useNavigate();
-
+	const { t } = useTranslation();
 	const handleSubmit = async (values) => {
 		const jwt = localStorage.getItem('jwt')
 		const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comment/create`, values, {
@@ -70,7 +71,7 @@ export default function CommentModal({handleClose, open, postId}) {
 							<IconButton onClick={handleClose} aria-label="delete">
 								<CloseIcon/>
 							</IconButton>
-							<p className='font-bold'>Comment</p>
+							<p className='font-bold'>{t('Comment')}</p>
 						</div>
 					</div>
 					<section className='pb-10'>
@@ -79,7 +80,7 @@ export default function CommentModal({handleClose, open, postId}) {
 							<div className='w-full'>
 								<form onSubmit={formik.handleSubmit}>
 									<div>
-										<input type="text" name='content' placeholder='What is happening'
+										<input type="text" name='content' placeholder={t('What is happening')}
 										       className='border-none outline-none text-xl bg-transparent'
 										       {...formik.getFieldProps("content")}/>
 										{formik.errors.content && formik.touched.content && (
